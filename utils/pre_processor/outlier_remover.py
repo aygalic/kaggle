@@ -1,8 +1,8 @@
-
 from .pre_processor import PreProcessorABC
 from collections import Counter
 
 import pandas as pd
+
 
 class OutlierRemover(PreProcessorABC):
     def __init__(self):
@@ -11,15 +11,19 @@ class OutlierRemover(PreProcessorABC):
 
     def fit(self, data: pd.DataFrame) -> None:
         for col in data:
-            if data[col].dtype == 'object':
+            if data[col].dtype == "object":
+                self.features_to_process[col] = [
+                    var
+                    for (var, count) in Counter(data[col].astype(str)).items()
+                    if count > 10
+                ]
 
-                self.features_to_process[col] = [var for (var,count) in Counter(data[col].astype(str)).items() if count > 10]
-
-    
     def transform(self, data: pd.DataFrame) -> pd.DataFrame:
         for col in data:
-            if data[col].dtype == 'object':
-
-                data[col] = [var if var in self.features_to_process[col] else "Unknown" for var in data[col]]
+            if data[col].dtype == "object":
+                data[col] = [
+                    var if var in self.features_to_process[col] else "Unknown"
+                    for var in data[col]
+                ]
 
         return data
