@@ -1,10 +1,15 @@
-from .pre_processor import PreProcessorABC
+"""module for outlier removal"""
+
 from collections import Counter
 
 import pandas as pd
 
+from .pre_processor import PreProcessorABC
+
 
 class OutlierRemover(PreProcessorABC):
+    """Remove low occurring dummies within categorical columns"""
+
     def __init__(self):
         self.features_to_process = {}
         self.threshold = 10
